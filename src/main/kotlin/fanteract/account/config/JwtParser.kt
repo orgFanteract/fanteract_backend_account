@@ -3,12 +3,11 @@ package fanteract.account.config
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import jakarta.servlet.http.HttpServletRequest
-import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.factory.annotation.Value
 
 class JwtParser {
     companion object {
-        fun extractKey(request: HttpServletRequest, key: String): Long{
+        fun extractKey(request: HttpServletRequest, userId: Long, key: String): Long{
             val userId = request.getAttribute(key) as String
 
             return userId.toLong()

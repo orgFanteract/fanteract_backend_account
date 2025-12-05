@@ -10,12 +10,13 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 class UserAPI(
     private val userService: UserService,
 ) {
@@ -39,55 +40,55 @@ class UserAPI(
         return ResponseEntity.ok().build()
     }
 
-    @LoginRequired
+    //@LoginRequired
     @Operation(summary = "마이페이지 조회")
     @GetMapping("/my-page")
     fun readMyPage(
-        request: HttpServletRequest
+        @RequestHeader("X-User-Id") userId: Long,
     ): ResponseEntity<ReadUserMyPageOuterResponse>{
-        val userId = JwtParser.extractKey(request, "userId")
+        //val userId = JwtParser.extractKey(request, "userId")
         val response = userService.readMyPage(userId)
 
         return ResponseEntity.ok(response)
     }
 
-    @LoginRequired
+    //@LoginRequired
     @Operation(summary = "마이페이지 - 제한된 게시글 조회")
     @GetMapping("/my-page/restricted-board")
     fun readRestrictedBoard(
-        request: HttpServletRequest,
+        @RequestHeader("X-User-Id") userId: Long,
         @RequestParam("page", defaultValue = "0") page: Int,
         @RequestParam("size", defaultValue = "10") size: Int,
     ): ResponseEntity<ReadRestrictedBoardPageOuterResponse> {
-        val userId = JwtParser.extractKey(request, "userId")
+        //val userId = JwtParser.extractKey(request, "userId")
         val response = userService.readRestrictedBoard(userId, page, size)
 
         return ResponseEntity.ok(response)
     }
 
-    @LoginRequired
+    //@LoginRequired
     @Operation(summary = "마이페이지 - 제한된 코멘트 조회")
     @GetMapping("/my-page/restricted-comment")
     fun readRestrictedComment(
-        request: HttpServletRequest,
+        @RequestHeader("X-User-Id") userId: Long,
         @RequestParam("page", defaultValue = "0") page: Int,
         @RequestParam("size", defaultValue = "10") size: Int,
     ): ResponseEntity<ReadRestrictedCommentPageOuterResponse> {
-        val userId = JwtParser.extractKey(request, "userId")
+        //val userId = JwtParser.extractKey(request, "userId")
         val response = userService.readRestrictedComment(userId, page, size)
 
         return ResponseEntity.ok(response)
     }
 
-    @LoginRequired
+    //@LoginRequired
     @Operation(summary = "마이페이지 - 제한된 채팅 조회")
     @GetMapping("/my-page/restricted-chat")
     fun readRestrictedChat(
-        request: HttpServletRequest,
+        @RequestHeader("X-User-Id") userId: Long,
         @RequestParam("page", defaultValue = "0") page: Int,
         @RequestParam("size", defaultValue = "10") size: Int,
     ): ResponseEntity<ReadRestrictedChatPageOuterResponse> {
-        val userId = JwtParser.extractKey(request, "userId")
+        //val userId = JwtParser.extractKey(request, "userId")
         val response = userService.readRestrictedChat(userId, page, size)
 
         return ResponseEntity.ok(response)
