@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # ✅ develop 브랜치에 커밋이 생겼을 때만 실행
-    if: github.ref == 'refs/heads/develop'
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/feat/'))
 
     steps:
       - name: Deploy to EC2 via SSH
