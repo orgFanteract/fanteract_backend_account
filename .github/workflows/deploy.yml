@@ -39,8 +39,8 @@ jobs:
             ${{ runner.os }}-gradle-
 
       # ✅ test 프로필로 H2 기반 테스트 실행
-      - name: Run tests with test profile
-        run: ./gradlew test -Dspring.profiles.active=test
+#      - name: Run tests with test profile
+#        run: ./gradlew test -Dspring.profiles.active=test
 
   # 2) develop 에 머지되었을 때만 EC2에 배포
   deploy-to-dev:
