@@ -27,4 +27,6 @@ interface UserRepo : JpaRepository<User, Long> {
     fun findByUserIdIn(
         @Param("idList") idList: List<Long>
     ): List<User>
+
+    fun existsByEmail(email: String): Boolean
 }

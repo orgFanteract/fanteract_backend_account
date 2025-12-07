@@ -1,5 +1,7 @@
 package fanteract.account.config
 
+import fanteract.account.exception.ExceptionType
+import fanteract.account.exception.MessageType
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import jakarta.servlet.http.HttpServletRequest
@@ -18,7 +20,7 @@ class JwtParser {
             @Value($$"${jwt.secret}") jwtSecret: String,
         ): Long {
             if (!token.startsWith("Bearer "))
-                throw NoSuchElementException("조건에 맞는 토큰이 존재하지 않습니다")
+                throw ExceptionType.withType(MessageType.INVALID_TOKEN)
 
             val token = token.substringAfter("Bearer ")
             val secretKey = Keys.hmacShaKeyFor(jwtSecret.toByteArray())

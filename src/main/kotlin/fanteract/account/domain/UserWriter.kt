@@ -1,6 +1,8 @@
 package fanteract.account.domain
 
 import fanteract.account.entity.User
+import fanteract.account.exception.ExceptionType
+import fanteract.account.exception.MessageType
 import fanteract.account.repo.UserRepo
 import org.springframework.stereotype.Component
 import kotlin.String
@@ -14,6 +16,9 @@ class UserWriter(
         password: String,
         name: String,
     ): User {
+        if (userRepo.existsByEmail(email)){
+            throw ExceptionType.withType(MessageType.ALREADY_EXIST)
+        }
         return userRepo.save(
             User(
                 email = email,
@@ -27,7 +32,7 @@ class UserWriter(
         userId: Long,
         activePoint: Int
     ) {
-        val user = userRepo.findById(userId).orElseThrow{NoSuchElementException("조건에 맞는 사용자가 존재하지 않습니다")}
+        val user = userRepo.findById(userId).orElseThrow{ ExceptionType.withType(MessageType.NOT_EXIST)}
         user.activePoint += activePoint
 
         userRepo.save(user)
@@ -37,7 +42,7 @@ class UserWriter(
         userId: Long,
         abusePoint: Int
     ) {
-        val user = userRepo.findById(userId).orElseThrow{NoSuchElementException("조건에 맞는 사용자가 존재하지 않습니다")}
+        val user = userRepo.findById(userId).orElseThrow{ExceptionType.withType(MessageType.NOT_EXIST)}
         user.abusePoint += abusePoint
 
         userRepo.save(user)
@@ -47,7 +52,7 @@ class UserWriter(
         userId: Long,
         balance: Int
     ) {
-        val user = userRepo.findById(userId).orElseThrow{NoSuchElementException("조건에 맞는 사용자가 존재하지 않습니다")}
+        val user = userRepo.findById(userId).orElseThrow{ExceptionType.withType(MessageType.NOT_EXIST)}
         user.balance += balance
 
         userRepo.save(user)
