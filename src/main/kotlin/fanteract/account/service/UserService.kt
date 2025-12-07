@@ -10,6 +10,8 @@ import fanteract.account.dto.inner.*
 import fanteract.account.dto.outer.*
 import fanteract.account.entity.User
 import fanteract.account.enumerate.RiskLevel
+import fanteract.account.exception.ExceptionType
+import fanteract.account.exception.MessageType
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -32,7 +34,7 @@ class UserService(
         val user = userReader.findByEmail(readUserSignInOuterRequest.email)
 
         if (user.password != readUserSignInOuterRequest.password){
-            throw kotlin.NoSuchElementException("조건에 맞는 사용자가 존재하지 않습니다")
+            throw ExceptionType.withType(MessageType.NOT_EXIST)
         }
 
         val secretKey = Keys.hmacShaKeyFor(jwtSecret.toByteArray())
