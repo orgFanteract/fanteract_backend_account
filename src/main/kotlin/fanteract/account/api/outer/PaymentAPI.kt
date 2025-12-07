@@ -9,22 +9,23 @@ import fanteract.account.service.PaymentService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/payments")
+@RequestMapping("/api/payments")
 class PaymentAPI(
     private val paymentService: PaymentService,
 ) {
-    @LoginRequired
+    //@LoginRequired
     @Operation(summary = "상품 구매")
     @PostMapping("{productId}/product")
     fun purchaseProduct(
-        request: HttpServletRequest,
+        @RequestHeader("X-User-Id") userId: Long,
         @PathVariable productId: Long,
     ): ResponseEntity<PurchaseProductOuterResponse> {
-        val userId = JwtParser.extractKey(request, "userId")
+        //val userId = JwtParser.extractKey(request, "userId")
         val response = paymentService.purchaseProduct(productId, userId)
 
         return ResponseEntity.ok().body(response)
