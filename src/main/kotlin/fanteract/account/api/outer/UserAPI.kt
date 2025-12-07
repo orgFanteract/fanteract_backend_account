@@ -40,19 +40,19 @@ class UserAPI(
         return ResponseEntity.ok().build()
     }
 
-    //@LoginRequired
+    
     @Operation(summary = "마이페이지 조회")
     @GetMapping("/my-page")
     fun readMyPage(
         @RequestHeader("X-User-Id") userId: Long,
     ): ResponseEntity<ReadUserMyPageOuterResponse>{
-        //val userId = JwtParser.extractKey(request, "userId")
+        
         val response = userService.readMyPage(userId)
 
         return ResponseEntity.ok(response)
     }
 
-    //@LoginRequired
+    
     @Operation(summary = "마이페이지 - 제한된 게시글 조회")
     @GetMapping("/my-page/restricted-board")
     fun readRestrictedBoard(
@@ -60,13 +60,13 @@ class UserAPI(
         @RequestParam("page", defaultValue = "0") page: Int,
         @RequestParam("size", defaultValue = "10") size: Int,
     ): ResponseEntity<ReadRestrictedBoardPageOuterResponse> {
-        //val userId = JwtParser.extractKey(request, "userId")
+        
         val response = userService.readRestrictedBoard(userId, page, size)
 
         return ResponseEntity.ok(response)
     }
 
-    //@LoginRequired
+    
     @Operation(summary = "마이페이지 - 제한된 코멘트 조회")
     @GetMapping("/my-page/restricted-comment")
     fun readRestrictedComment(
@@ -74,13 +74,13 @@ class UserAPI(
         @RequestParam("page", defaultValue = "0") page: Int,
         @RequestParam("size", defaultValue = "10") size: Int,
     ): ResponseEntity<ReadRestrictedCommentPageOuterResponse> {
-        //val userId = JwtParser.extractKey(request, "userId")
+        
         val response = userService.readRestrictedComment(userId, page, size)
 
         return ResponseEntity.ok(response)
     }
 
-    //@LoginRequired
+    
     @Operation(summary = "마이페이지 - 제한된 채팅 조회")
     @GetMapping("/my-page/restricted-chat")
     fun readRestrictedChat(
@@ -88,7 +88,7 @@ class UserAPI(
         @RequestParam("page", defaultValue = "0") page: Int,
         @RequestParam("size", defaultValue = "10") size: Int,
     ): ResponseEntity<ReadRestrictedChatPageOuterResponse> {
-        //val userId = JwtParser.extractKey(request, "userId")
+        
         val response = userService.readRestrictedChat(userId, page, size)
 
         return ResponseEntity.ok(response)
