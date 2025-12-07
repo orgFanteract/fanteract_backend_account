@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  account-app:
+    image: fanteract-account-app:latest   # 빌드한 이미지 이름
+    container_name: fanteract-account-app
+
+    environment:
+      # Spring 프로필
+      SPRING_PROFILES_ACTIVE: prod
+
+      # (선택) 아래 두 개는 application.yml 값과 맞추고 싶으면 유지
+      SERVER_PORT: 8080
+      SPRING_APPLICATION_NAME: fanteract-account
+
+      # ✅ RDS 연결 정보 (account 전용 RDS + account_db 스키마)
+      SPRING_DATASOURCE_URL: jdbc:mysql://fanteract-account-db.c32w6yq24ria.ap-northeast-2.rds.amazonaws.com:3306/account_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+      SPRING_DATASOURCE_USERNAME: admin          # 🔧 실제 계정으로 변경
+      SPRING_DATASOURCE_PASSWORD: password      # 🔧 실제 비밀번호로 변경
+
+      # ✅ JWT
+      JWT_SECRET: jwtsecretas78dg97d89we4hahsd89we4hahsd89eqwhu4rtihweur489wtbakjwerbjka2q9it4
+
+      # ✅ 다른 MSA 서비스 주소 (account → social / connect 호출용)
+      SOCIAL_SERVICE_URL: http://172.31.43.128:8080   # social-service EC2 내부 IP:PORT
+      CONNECT_SERVICE_URL: http://172.31.40.214:8080  # connect-service EC2 내부 IP:PORT
+
+    ports:
+      - "8080:8080"
+
+    restart: always
