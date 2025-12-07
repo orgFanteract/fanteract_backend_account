@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  account-app:
+    image: fanteract-account-app:latest   # 빌드된 이미지 이름
+    container_name: fanteract-account-app
+
+    env_file:
+      - .env
+
+    ports:
+      - "8080:8080"
+
+    restart: always
