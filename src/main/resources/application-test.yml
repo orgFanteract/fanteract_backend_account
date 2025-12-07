@@ -37,3 +37,15 @@ client:
     url: http://localhost:18082
   connect-service:
     url: http://localhost:18083
+
+SPRING_DATASOURCE_URL: "jdbc:h2:mem:testdb"
+SPRING_DATASOURCE_USERNAME: sa
+SPRING_DATASOURCE_PASSWORD: ""
+
+# 운영용 JWT placeholder 대응
+JWT_SECRET: dummy-test-secret
+
+# MSA 간 호출 URL 더미값(테스트에서는 안 쓰이지만 placeholder 해결용)
+SOCIAL_SERVICE_URL: http://localhost:18082
+CONNECT_SERVICE_URL: http://localhost:18083
+ACCOUNT_SERVICE_URL: http://localhost:18081
