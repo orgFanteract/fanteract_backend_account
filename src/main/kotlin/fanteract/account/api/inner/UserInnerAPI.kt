@@ -45,6 +45,7 @@ class UserInnerAPI(
         @PathVariable userId: Long,
         @RequestBody request: UpdateBalanceInnerRequest,
     ): ResponseEntity<Void> {
+        simulateDelay() // 서비스 실행 전 랜덤 지연
         userService.updateBalance(userId, request.balance)
 
         return ResponseEntity.ok().build()
@@ -80,5 +81,15 @@ class UserInnerAPI(
         val response = userService.findByIdIn(userIds)
 
         return ResponseEntity.ok().body(response)
+    }
+
+    private fun simulateDelay() {
+        val randomValue = Math.random()
+        println("simulateDelay randomValue=$randomValue")
+
+        if (randomValue > 0.7) {
+            println("simulateDelay → randomValue > 0.7, sleeping 5 seconds...")
+            Thread.sleep(5000) // 5초 지연
+        }
     }
 }
