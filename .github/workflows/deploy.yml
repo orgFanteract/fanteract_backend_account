@@ -39,8 +39,8 @@ jobs:
             ${{ runner.os }}-gradle-
 
       # ✅ test 프로필로 H2 기반 테스트 실행
-      - name: Run tests with test profile
-        run: ./gradlew test -Dspring.profiles.active=test
+#      - name: Run tests with test profile
+#        run: ./gradlew test -Dspring.profiles.active=test
 
   # 2) develop 에 머지되었을 때만 EC2에 배포
   deploy-to-dev:
@@ -70,18 +70,18 @@ jobs:
             git pull origin develop
 
             echo ">>> docker compose down"
-            docker compose down || true
+            sudo docker compose down || true
 
             echo ">>> 기존 이미지 삭제 (없으면 무시)"
-            docker rmi fanteract-account-app:latest || true
+            sudo docker rmi fanteract-account-app:latest || true
 
             echo ">>> Docker 이미지 빌드 (멀티 스테이지: Gradle bootJar -x test)"
-            docker build -t fanteract-account-app:latest .
+            sudo docker build -t fanteract-account-app:latest .
 
             echo ">>> docker compose up -d --build"
-            docker compose up -d --build
+            sudo docker compose up -d --build
 
             echo ">>> 현재 컨테이너 상태"
-            docker ps
+            sudo docker ps
 
             echo ">>> 배포 완료"

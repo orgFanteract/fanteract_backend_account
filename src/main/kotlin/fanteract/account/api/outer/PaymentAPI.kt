@@ -18,14 +18,14 @@ import org.springframework.web.bind.annotation.RestController
 class PaymentAPI(
     private val paymentService: PaymentService,
 ) {
-    //@LoginRequired
+    
     @Operation(summary = "상품 구매")
     @PostMapping("{productId}/product")
     fun purchaseProduct(
         @RequestHeader("X-User-Id") userId: Long,
         @PathVariable productId: Long,
     ): ResponseEntity<PurchaseProductOuterResponse> {
-        //val userId = JwtParser.extractKey(request, "userId")
+        
         val response = paymentService.purchaseProduct(productId, userId)
 
         return ResponseEntity.ok().body(response)
