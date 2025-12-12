@@ -45,7 +45,7 @@ class UserInnerAPI(
         @PathVariable userId: Long,
         @RequestBody request: UpdateBalanceInnerRequest,
     ): ResponseEntity<Void> {
-        simulateDelay() // 서비스 실행 전 랜덤 지연
+        //simulateDelay() // 서비스 실행 전 랜덤 지연
         userService.updateBalance(userId, request.balance)
 
         return ResponseEntity.ok().build()

@@ -1,9 +1,6 @@
 package fanteract.account.api.outer
 
 import io.swagger.v3.oas.annotations.Operation
-import jakarta.servlet.http.HttpServletRequest
-import fanteract.account.config.JwtParser
-import fanteract.account.annotation.LoginRequired
 import fanteract.account.dto.outer.*
 import fanteract.account.service.UserService
 import org.springframework.http.ResponseEntity
@@ -40,13 +37,12 @@ class UserAPI(
         return ResponseEntity.ok().build()
     }
 
-    
+    // TODO: 병렬화 고민하기. 병렬화를 진행할 경우, 조회 시간을 줄이기 위해 많은 자원을 사용하며, 구현이 복잡하기 때문이다.
     @Operation(summary = "마이페이지 조회")
     @GetMapping("/my-page")
     fun readMyPage(
         @RequestHeader("X-User-Id") userId: Long,
     ): ResponseEntity<ReadUserMyPageOuterResponse>{
-        
         val response = userService.readMyPage(userId)
 
         return ResponseEntity.ok(response)
@@ -60,7 +56,7 @@ class UserAPI(
         @RequestParam("page", defaultValue = "0") page: Int,
         @RequestParam("size", defaultValue = "10") size: Int,
     ): ResponseEntity<ReadRestrictedBoardPageOuterResponse> {
-        
+
         val response = userService.readRestrictedBoard(userId, page, size)
 
         return ResponseEntity.ok(response)

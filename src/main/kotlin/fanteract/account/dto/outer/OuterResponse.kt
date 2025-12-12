@@ -56,16 +56,16 @@ data class ReadRestrictedChatPageOuterResponse(
 )
 
 data class ActivityStats(
-    val totalChatRoomCount: Long,
-    val totalChatCount: Long,
-    val totalBoardCount: Long,
-    val totalCommentCount: Long,
+    val totalChatRoomCount: Long?,
+    val totalChatCount: Long?,
+    val totalBoardCount: Long?,
+    val totalCommentCount: Long?,
 )
 
 data class RestrictionStats(
-    val totalRestrictedChatCount: Long,
-    val totalRestrictedBoardCount: Long,
-    val totalRestrictedCommentCount: Long,
+    val totalRestrictedChatCount: Long?,
+    val totalRestrictedBoardCount: Long?,
+    val totalRestrictedCommentCount: Long?,
 )
 
 data class UserScore(
