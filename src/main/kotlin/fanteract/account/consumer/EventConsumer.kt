@@ -16,7 +16,7 @@ class EventConsumer(
         topics = ["ACCOUNT_SERVICE.updateActivePoint"],
         groupId = "account-service"
     )
-    fun consume(message: String){
+    fun consumeUpdateActivePoint(message: String){
         println("consumed")
         val decodedJson = String(Base64.getDecoder().decode(message))
         println(decodedJson)
@@ -29,6 +29,7 @@ class EventConsumer(
 
         println("${response.content.userId} - ${response.content.activePoint}")
     }
+
     data class OutboxMessage<T>(
         val methodName: String,
         val content: T

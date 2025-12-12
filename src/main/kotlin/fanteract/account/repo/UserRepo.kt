@@ -2,6 +2,7 @@ package fanteract.account.repo
 
 import fanteract.account.entity.User
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.stereotype.Repository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
@@ -29,4 +30,15 @@ interface UserRepo : JpaRepository<User, Long> {
     ): List<User>
 
     fun existsByEmail(email: String): Boolean
+
+    @Modifying
+    @Query("""
+        update User u
+        set u.balance = u.balance - :amount
+        where u.userId = :userId and u.balance >= :amount
+    """)
+    fun debitIfEnough(
+        @Param("userId") userId: Long,
+        @Param("amount") amount: Int
+    ): Int
 }

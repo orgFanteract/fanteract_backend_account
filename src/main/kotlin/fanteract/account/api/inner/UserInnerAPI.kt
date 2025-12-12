@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-@Hidden
+//@Hidden
 @RestController
 @RequestMapping("/internal/users")
 class UserInnerAPI(
@@ -45,7 +45,6 @@ class UserInnerAPI(
         @PathVariable userId: Long,
         @RequestBody request: UpdateBalanceInnerRequest,
     ): ResponseEntity<Void> {
-        //simulateDelay() // 서비스 실행 전 랜덤 지연
         userService.updateBalance(userId, request.balance)
 
         return ResponseEntity.ok().build()
@@ -79,6 +78,16 @@ class UserInnerAPI(
         @RequestParam("userIds") userIds: List<Long>,
     ): ResponseEntity<ReadUserListInnerResponse> {
         val response = userService.findByIdIn(userIds)
+
+        return ResponseEntity.ok().body(response)
+    }
+
+    @PutMapping("/{userId}/debit")
+    fun debitIfEnough(
+        @PathVariable userId: Long,
+        @RequestBody request: UpdateUserDebitIfEnoughInnerRequest,
+    ): ResponseEntity<UpdateUserDebitIfEnoughInnerResponse>{
+        val response = userService.debitIfEnough(userId, request.amount)
 
         return ResponseEntity.ok().body(response)
     }

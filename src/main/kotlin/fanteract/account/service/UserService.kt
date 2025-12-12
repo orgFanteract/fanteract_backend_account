@@ -210,4 +210,13 @@ class UserService(
 
         return ReadUserListInnerResponse(payload)
     }
+
+    fun debitIfEnough(
+        userId: Long,
+        amount: Int,
+    ): UpdateUserDebitIfEnoughInnerResponse{
+        val response = userWriter.debitIfEnough(userId, amount)
+
+        return UpdateUserDebitIfEnoughInnerResponse(response)
+    }
 }
