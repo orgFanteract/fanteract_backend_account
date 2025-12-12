@@ -11,3 +11,6 @@ data class UpdateActivePointInnerRequest(
 data class UpdateAbusePointInnerRequest(
     val abusePoint: Int,
 )
+data class UpdateUserDebitIfEnoughInnerRequest(
+    val amount: Int,
+)

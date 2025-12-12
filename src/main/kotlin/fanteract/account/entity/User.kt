@@ -19,7 +19,7 @@ class User(
     val email: String,
     val password: String,
     val name: String,
-    var balance: Int = 0,
+    var balance: Int = 10,//1000000,
     var activePoint: Int = 0,
     var abusePoint: Int = 0,
     val passExpiredAt: LocalDateTime? = null,

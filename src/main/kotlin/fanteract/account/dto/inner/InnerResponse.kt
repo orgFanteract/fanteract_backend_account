@@ -20,3 +20,7 @@ data class ReadUserInnerResponse(
 data class ReadUserListInnerResponse(
     val users: List<ReadUserInnerResponse>
 )
+
+data class UpdateUserDebitIfEnoughInnerResponse(
+    val response: Int,
+)

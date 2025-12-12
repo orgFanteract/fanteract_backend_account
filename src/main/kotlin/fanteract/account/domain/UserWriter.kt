@@ -57,4 +57,8 @@ class UserWriter(
 
         userRepo.save(user)
     }
+
+    fun debitIfEnough(userId: Long, amount: Int): Int {
+        return userRepo.debitIfEnough(userId, amount)
+    }
 }
