@@ -1,15 +1,20 @@
 package fanteract.account.service
 
+import fanteract.account.adapter.MessageAdapter
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import fanteract.account.client.ConnectClient
 import fanteract.account.client.SocialClient
-import fanteract.account.domain.UserReader
-import fanteract.account.domain.UserWriter
+import fanteract.account.adapter.UserReader
+import fanteract.account.adapter.UserWriter
+import fanteract.account.dto.client.UpdateActivePointRequest
 import fanteract.account.dto.inner.*
 import fanteract.account.dto.outer.*
 import fanteract.account.entity.User
+import fanteract.account.enumerate.ActivePoint
+import fanteract.account.enumerate.Balance
 import fanteract.account.enumerate.RiskLevel
+import fanteract.account.enumerate.TopicService
 import fanteract.account.exception.ExceptionType
 import fanteract.account.exception.MessageType
 import org.springframework.beans.factory.annotation.Value
@@ -17,7 +22,6 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.concurrent.CompletableFuture
 import kotlin.Long
 import kotlin.collections.map
 import kotlin.text.toByteArray
@@ -29,6 +33,7 @@ class UserService(
     private val userWriter: UserWriter,
     private val socialClient: SocialClient,
     private val connectClient: ConnectClient,
+    private val messageAdapter: MessageAdapter,
     @Value($$"${jwt.secret}") private val jwtSecret: String,
 ) {
     fun signIn(readUserSignInOuterRequest: ReadUserSignInOuterRequest): ReadUserSignInOuterResponse {
@@ -219,4 +224,6 @@ class UserService(
 
         return UpdateUserDebitIfEnoughInnerResponse(response)
     }
+
+
 }

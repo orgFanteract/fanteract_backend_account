@@ -1,4 +1,6 @@
 package fanteract.account.dto.client
 
-class ClientRequest {
-}
+data class UpdateActivePointRequest(
+    val userId: Long,
+    val activePoint: Int,
+)

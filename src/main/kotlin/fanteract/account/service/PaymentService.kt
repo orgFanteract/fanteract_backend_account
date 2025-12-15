@@ -1,9 +1,9 @@
 package fanteract.account.service
 
-import fanteract.account.domain.PaymentHistoryWriter
-import fanteract.account.domain.ProductReader
-import fanteract.account.domain.UserReader
-import fanteract.account.domain.UserWriter
+import fanteract.account.adapter.PaymentHistoryWriter
+import fanteract.account.adapter.ProductReader
+import fanteract.account.adapter.UserReader
+import fanteract.account.adapter.UserWriter
 import fanteract.account.dto.outer.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

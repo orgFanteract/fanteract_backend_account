@@ -1,4 +1,4 @@
-package fanteract.account.domain
+package fanteract.account.adapter
 
 import fanteract.account.entity.User
 import fanteract.account.enumerate.Status
