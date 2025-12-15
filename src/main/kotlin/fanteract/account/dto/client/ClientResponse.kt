@@ -1,5 +1,6 @@
 package fanteract.account.dto.client
 
+import fanteract.account.enumerate.ActivePoint
 import fanteract.account.enumerate.RiskLevel
 import java.time.LocalDateTime
 
