@@ -3,6 +3,7 @@ package fanteract.account.dto.client
 import com.fasterxml.jackson.databind.JsonNode
 import fanteract.account.enumerate.EventStatus
 import java.time.Instant
+import java.util.UUID
 
 data class MessageWrapper<T>(
     val methodName: String,
@@ -68,4 +69,12 @@ data class UpdateActivePointEventDto(
     val userId: Long,
     val cost: Int,
     val commentId: Long,
+)
+
+
+data class MyPageDeltaEvent(
+    val eventId: String = UUID.randomUUID().toString(),
+    val userId: Long,
+    val deltas: Map<String, Long>, // 예: boardCount:+1, commentCount:+2 ...
+    val createdAtEpochMs: Long = System.currentTimeMillis(),
 )
