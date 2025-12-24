@@ -41,4 +41,38 @@ interface UserRepo : JpaRepository<User, Long> {
         @Param("userId") userId: Long,
         @Param("amount") amount: Int
     ): Int
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("""
+        update User u
+        set u.activePoint = u.activePoint + :delta
+        where u.userId = :userId
+    """)
+    fun increaseActivePoint(
+        @Param("userId") userId: Long,
+        @Param("delta") delta: Int
+    ): Int
+
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("""
+        update User u
+        set u.abusePoint = u.abusePoint + :delta
+        where u.userId = :userId
+    """)
+    fun increaseAbusePoint(
+        @Param("userId") userId: Long,
+        @Param("delta") delta: Int
+    ): Int
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("""
+        update User u
+        set u.balance = u.balance + :delta
+        where u.userId = :userId
+    """)
+    fun increaseBalance(
+        @Param("userId") userId: Long,
+        @Param("delta") delta: Int
+    ): Int
 }

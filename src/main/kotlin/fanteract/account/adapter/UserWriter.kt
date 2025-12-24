@@ -5,6 +5,7 @@ import fanteract.account.exception.ExceptionType
 import fanteract.account.exception.MessageType
 import fanteract.account.repo.UserRepo
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import kotlin.String
 
 @Component
@@ -28,34 +29,31 @@ class UserWriter(
         )
     }
 
+    @Transactional
     fun updateActivePoint(
         userId: Long,
         activePoint: Int
     ) {
-        val user = userRepo.findById(userId).orElseThrow{ ExceptionType.withType(MessageType.NOT_EXIST)}
-        user.activePoint += activePoint
-
-        userRepo.save(user)
+        val updated = userRepo.increaseActivePoint(userId, activePoint)
+        if (updated == 0) {
+            throw ExceptionType.withType(MessageType.NOT_EXIST)
+        }
     }
 
-    fun updateAbusePoint(
-        userId: Long,
-        abusePoint: Int
-    ) {
-        val user = userRepo.findById(userId).orElseThrow{ExceptionType.withType(MessageType.NOT_EXIST)}
-        user.abusePoint += abusePoint
-
-        userRepo.save(user)
+    @Transactional
+    fun updateAbusePoint(userId: Long, abusePoint: Int) {
+        val updated = userRepo.increaseAbusePoint(userId, abusePoint)
+        if (updated == 0) {
+            throw ExceptionType.withType(MessageType.NOT_EXIST)
+        }
     }
 
-    fun updateBalance(
-        userId: Long,
-        balance: Int
-    ) {
-        val user = userRepo.findById(userId).orElseThrow{ExceptionType.withType(MessageType.NOT_EXIST)}
-        user.balance += balance
-
-        userRepo.save(user)
+    @Transactional
+    fun updateBalance(userId: Long, balance: Int) {
+        val updated = userRepo.increaseBalance(userId, balance)
+        if (updated == 0) {
+            throw ExceptionType.withType(MessageType.NOT_ENOUGH_BALANCE)
+        }
     }
 
     fun debitIfEnough(userId: Long, amount: Int): Int {

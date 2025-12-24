@@ -1,11 +1,13 @@
 package fanteract.account.consumer
 
+import fanteract.account.adapter.MyPageRedisWriter
 import fanteract.account.adapter.SagaAccountReader
 import fanteract.account.adapter.SagaAccountWriter
 import fanteract.account.adapter.UserWriter
 import fanteract.account.dto.client.*
 import fanteract.account.enumerate.Balance
 import fanteract.account.enumerate.EventStatus
+import fanteract.account.enumerate.RiskLevel
 import fanteract.account.exception.ExceptionType
 import fanteract.account.exception.MessageType
 import fanteract.account.util.BaseUtil
@@ -23,15 +25,14 @@ class EventConsumer(
     private val sagaAccountWriter: SagaAccountWriter,
     private val sagaAccountReader: SagaAccountReader,
     private val kafkaTemplate: KafkaTemplate<String, String>,
+    private val myPageRedisWriter: MyPageRedisWriter,
 ) {
     @KafkaListener(
         topics = ["ACCOUNT_SERVICE.updateActivePoint"],
         groupId = "account-service"
     )
     fun consumeUpdateActivePoint(message: String){
-        println("consumed")
         val decodedJson = String(Base64.getDecoder().decode(message))
-        println(decodedJson)
         val response = BaseUtil.fromJson<MessageWrapper<UpdateActivePointSendRequest>>(decodedJson)
 
         userWriter.updateActivePoint(
@@ -190,4 +191,57 @@ class EventConsumer(
         )
     }
 
+    // CQRS
+    @KafkaListener(
+        topics = [
+            "SOCIAL_SERVICE.createCommentForUser",
+            "SOCIAL_SERVICE.deleteCommentForUser",
+            "SOCIAL_SERVICE.createBoardForUser",
+            "CONNECT_SERVICE.createChatroomForUser",
+            "CONNECT_SERVICE.createChatForUser",
+        ],
+        groupId = "account-service"
+    )
+    fun readSocialAndConnectEvent(message: String){
+        val decodedJson = String(Base64.getDecoder().decode(message))
+        val response = BaseUtil.fromJson<MessageWrapper<WriteCommentForUserRequest>>(decodedJson)
+
+        val payload = response.content
+        val userId = payload.userId
+        val riskLevel = payload.riskLevel
+        val isRestricted = (riskLevel == RiskLevel.BLOCK)
+
+        when (response.methodName) {
+            "createChatroomForUser" -> {
+                myPageRedisWriter.increaseChatroom(userId, +1)
+            }
+            "deleteChatroomForUser" -> {
+                myPageRedisWriter.increaseChatroom(userId, -1)
+            }
+            "createChatForUser" -> {
+                myPageRedisWriter.increaseChat(userId, +1)
+                if (isRestricted) myPageRedisWriter.increaseRestrictedChat(userId, +1)
+            }
+            "deleteChatForUser" -> {
+                myPageRedisWriter.increaseChat(userId, -1)
+                if (isRestricted) myPageRedisWriter.increaseRestrictedChat(userId, -1)
+            }
+            "createBoardForUser" -> {
+                myPageRedisWriter.increaseBoard(userId, +1)
+                if (isRestricted) myPageRedisWriter.increaseRestrictedBoard(userId, +1)
+            }
+            "deleteBoardForUser" -> {
+                myPageRedisWriter.increaseBoard(userId, -1)
+                if (isRestricted) myPageRedisWriter.increaseRestrictedBoard(userId, -1)
+            }
+            "createCommentForUser" -> {
+                myPageRedisWriter.increaseComment(userId, +1)
+                if (isRestricted) myPageRedisWriter.increaseRestrictedComment(userId, +1)
+            }
+            "deleteCommentForUser" -> {
+                myPageRedisWriter.increaseComment(userId, -1)
+                if (isRestricted) myPageRedisWriter.increaseRestrictedComment(userId, -1)
+            }
+        }
+    }
 }

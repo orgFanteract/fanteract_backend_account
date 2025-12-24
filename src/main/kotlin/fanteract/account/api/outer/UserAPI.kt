@@ -37,13 +37,12 @@ class UserAPI(
         return ResponseEntity.ok().build()
     }
 
-    // TODO: 병렬화 고민하기. 병렬화를 진행할 경우, 조회 시간을 줄이기 위해 많은 자원을 사용하며, 구현이 복잡하기 때문이다.
     @Operation(summary = "마이페이지 조회")
     @GetMapping("/my-page")
     fun readMyPage(
         @RequestHeader("X-User-Id") userId: Long,
     ): ResponseEntity<ReadUserMyPageOuterResponse>{
-        val response = userService.readMyPage(userId)
+        val response = userService.readMyPageNew(userId)
 
         return ResponseEntity.ok(response)
     }

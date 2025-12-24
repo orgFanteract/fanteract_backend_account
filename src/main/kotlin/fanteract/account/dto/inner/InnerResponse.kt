@@ -14,7 +14,6 @@ data class ReadUserInnerResponse(
     var balance: Int = 0,
     var activePoint: Int = 0,
     var abusePoint: Int = 0,
-    val passExpiredAt: LocalDateTime? = null,
 )
 
 data class ReadUserListInnerResponse(

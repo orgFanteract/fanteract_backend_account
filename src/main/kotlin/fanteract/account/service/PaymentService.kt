@@ -7,6 +7,8 @@ import fanteract.account.adapter.UserWriter
 import fanteract.account.dto.outer.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.Base64
+import java.util.UUID
 
 @Transactional
 @Service

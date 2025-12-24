@@ -1,6 +1,8 @@
 package fanteract.account.service
 
 import fanteract.account.adapter.MessageAdapter
+import fanteract.account.adapter.MyPageRedisReader
+import fanteract.account.adapter.MyPageRedisWriter
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import fanteract.account.client.ConnectClient
@@ -34,6 +36,8 @@ class UserService(
     private val socialClient: SocialClient,
     private val connectClient: ConnectClient,
     private val messageAdapter: MessageAdapter,
+    private val myPageRedisReader: MyPageRedisReader,
+    private val myPageRedisWriter: MyPageRedisWriter,
     @Value($$"${jwt.secret}") private val jwtSecret: String,
 ) {
     fun signIn(readUserSignInOuterRequest: ReadUserSignInOuterRequest): ReadUserSignInOuterResponse {
@@ -92,12 +96,88 @@ class UserService(
                 balance = user.balance,
         )
 
+        println("activityStats = ${activityStats.totalChatRoomCount} / ${activityStats.totalChatCount} / ${activityStats.totalBoardCount} / ${activityStats.totalCommentCount}")
+        println("restrictionStats = ${restrictionStats.totalRestrictedChatCount} / ${restrictionStats.totalRestrictedBoardCount} / ${restrictionStats.totalRestrictedCommentCount}")
+        println("userScore = ${userScore.activePoint} / ${userScore.abusePoint} / ${userScore.balance}")
+
         return ReadUserMyPageOuterResponse(
             email = user.email,
             name = user.name,
             activityStats = activityStats,
             restrictionStats = restrictionStats,
             userScore = userScore
+        )
+    }
+
+    fun readMyPageNew(userId: Long): ReadUserMyPageOuterResponse {
+        val user = userReader.findById(userId)
+
+        // 1) Redis snapshot 우선
+        val snapshot = myPageRedisReader.readSnapshot(user.userId)
+        if (snapshot != null) {
+            return ReadUserMyPageOuterResponse(
+                email = user.email,
+                name = user.name,
+                activityStats = ActivityStats(
+                    totalChatRoomCount = snapshot.chatroomCount,
+                    totalChatCount = snapshot.chatCount,
+                    totalBoardCount = snapshot.boardCount,
+                    totalCommentCount = snapshot.commentCount,
+                ),
+                restrictionStats = RestrictionStats(
+                    totalRestrictedChatCount = snapshot.restrictedChatCount,
+                    totalRestrictedBoardCount = snapshot.restrictedBoardCount,
+                    totalRestrictedCommentCount = snapshot.restrictedCommentCount,
+                ),
+                userScore = UserScore(
+                    activePoint = user.activePoint,
+                    abusePoint = user.abusePoint,
+                    balance = user.balance,
+                )
+            )
+        }
+
+        // 2) fallback: Redis가 없을 때만 외부 count 호출
+        val chatroomCount = connectClient.countChatroomByUserId(user.userId) ?: 0L
+        val chatCount = connectClient.countChatByUserId(user.userId) ?: 0L
+        val boardCount = socialClient.countBoardByUserId(user.userId) ?: 0L
+        val commentCount = socialClient.countCommentByUserId(user.userId) ?: 0L
+
+        val restrictedChatCount = connectClient.countChatByUserIdAndRiskLevel(user.userId, RiskLevel.BLOCK) ?: 0L
+        val restrictedBoardCount = socialClient.countBoardByUserIdAndRiskLevel(user.userId, RiskLevel.BLOCK) ?: 0L
+        val restrictedCommentCount = socialClient.countCommentByUserIdAndRiskLevel(user.userId, RiskLevel.BLOCK) ?: 0L
+
+        // 3) Redis rebuild (다음 요청부터는 Redis만 읽음)
+        myPageRedisWriter.rebuildSnapshot(
+            userId = user.userId,
+            chatroomCount = chatroomCount,
+            chatCount = chatCount,
+            boardCount = boardCount,
+            commentCount = commentCount,
+            restrictedChatCount = restrictedChatCount,
+            restrictedBoardCount = restrictedBoardCount,
+            restrictedCommentCount = restrictedCommentCount,
+        )
+
+        return ReadUserMyPageOuterResponse(
+            email = user.email,
+            name = user.name,
+            activityStats = ActivityStats(
+                totalChatRoomCount = chatroomCount,
+                totalChatCount = chatCount,
+                totalBoardCount = boardCount,
+                totalCommentCount = commentCount,
+            ),
+            restrictionStats = RestrictionStats(
+                totalRestrictedChatCount = restrictedChatCount,
+                totalRestrictedBoardCount = restrictedBoardCount,
+                totalRestrictedCommentCount = restrictedCommentCount,
+            ),
+            userScore = UserScore(
+                activePoint = user.activePoint,
+                abusePoint = user.abusePoint,
+                balance = user.balance,
+            )
         )
     }
 
@@ -184,7 +264,6 @@ class UserService(
             balance = user.balance,
             activePoint = user.activePoint,
             abusePoint = user.abusePoint,
-            passExpiredAt = user.passExpiredAt
         )
     }
     fun updateBalance(userId: Long, balance: Int) {
@@ -209,7 +288,6 @@ class UserService(
                 balance = 0,
                 activePoint = 0,
                 abusePoint = 0,
-                passExpiredAt = user.passExpiredAt,
             )
         }
 

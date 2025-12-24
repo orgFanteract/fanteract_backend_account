@@ -30,4 +30,8 @@ class UserReader(
             throw ExceptionType.withType(MessageType.NOT_EXIST)
         }
     }
+
+    fun findAll(): List<User> {
+        return userRepo.findAll()
+    }
 }
