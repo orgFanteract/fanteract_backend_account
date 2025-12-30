@@ -4,6 +4,7 @@ plugins {
 	id("org.springframework.boot") version "3.5.8"
 	id("io.spring.dependency-management") version "1.1.7"
 	kotlin("plugin.jpa") version "2.2.21"
+    id("org.jlleitschuh.gradle.ktlint") version "14.0.1"
 }
 
 group = "fanteract"
@@ -77,4 +78,12 @@ allOpen {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+tasks.named("check") {
+    dependsOn("ktlintCheck")
+}
+
+ktlint {
+    version.set("1.7.0")
 }
