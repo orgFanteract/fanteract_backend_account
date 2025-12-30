@@ -16,9 +16,8 @@ class MyPageProjectionRebuildScheduler(
     private val socialClient: SocialClient,
     private val connectClient: ConnectClient,
 ) {
-    //@Scheduled(fixedDelay = 10_000)
+    @Scheduled(fixedDelay = 1000)
     fun rebuildMyPageProjection() {
-        println("rebuildMyPageProjection exec")
         val userIdList = userReader.findAll().map{it.userId}
 
         for (userId in userIdList){

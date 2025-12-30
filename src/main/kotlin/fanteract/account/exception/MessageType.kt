@@ -12,6 +12,8 @@ enum class MessageType(
     INVALID_TOKEN("INVALID_TOKEN", "조건에 맞는 토큰이 존재하지 않습니다", HttpStatus.BAD_REQUEST),
     NOT_ENOUGH_BALANCE("NOT_ENOUGH_BALANCE", "비용이 부족합니다", HttpStatus.BAD_REQUEST),
     INVALID_CONNECTED_SERVICE("INVALID_CONNECTED_SERVICE", "연결된 서비스에 오류가 있습니다", HttpStatus.BAD_REQUEST),
+    INVALID_ACCESS_RESOURCE("INVALID_ACCESS_RESOURCE", "대상 서비스에 접근할 수 없습니다", HttpStatus.BAD_REQUEST),
+    CALL_NOT_PERMITTED("CALL_NOT_PERMITTED", "해당 접근은 OPEN 상태입니다", HttpStatus.BAD_REQUEST),
     ;
 
     fun getCode(): String = this.code

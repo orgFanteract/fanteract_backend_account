@@ -56,7 +56,7 @@ class UserInnerAPI(
         @PathVariable userId: Long,
         @RequestBody request: UpdateActivePointInnerRequest,
     ): ResponseEntity<Void> {
-        //userService.updateActivePoint(userId, request.activePoint)
+        userService.updateActivePoint(userId, request.activePoint)
 
         return ResponseEntity.ok().build()
     }
