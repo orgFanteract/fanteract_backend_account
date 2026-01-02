@@ -30,7 +30,7 @@ class SocialClient(
     fun countBoardByUserId(userId: Long): Long? {
         val response =
             circuitBreakerUtil.circuitBreaker(
-                profile = circuitBreakerManager.socialConfig
+                profile = circuitBreakerManager.baseConfig
             ){
                 restClient.get()
                     .uri("/internal/boards/{userId}/user/count", userId)

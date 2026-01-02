@@ -114,6 +114,7 @@ class UserService(
 
         // 1) Redis snapshot 우선
         val snapshot = myPageRedisReader.readSnapshot(user.userId)
+
         if (snapshot != null) {
             return ReadUserMyPageOuterResponse(
                 email = user.email,
