@@ -62,6 +62,10 @@ dependencies {
     // redis
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+    // eureka
+    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+
 }
 
 kotlin {
@@ -86,4 +90,10 @@ tasks.named("check") {
 
 ktlint {
     version.set("1.7.0")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2025.0.1")
+    }
 }

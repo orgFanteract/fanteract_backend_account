@@ -23,7 +23,6 @@ class ConnectClient(
     private val circuitBreakerUtil: CircuitBreakerUtil,
     private val circuitBreakerManager: CircuitBreakerManager,
 ) {
-
     fun countChatroomByUserId(userId: Long): Long? {
         val response =
             circuitBreakerUtil.circuitBreaker(
