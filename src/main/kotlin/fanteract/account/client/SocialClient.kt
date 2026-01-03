@@ -20,13 +20,16 @@ import org.springframework.web.client.RestClient
 
 @Component
 class SocialClient(
-    @Value("\${client.social-service.url}") boardServiceUrl: String,
-    private val restClient: RestClient = RestClient.builder()
-        .baseUrl(boardServiceUrl)
-        .build(),
+    @Value("\${client.social-service.url}")
+    boardServiceUrl: String,
+    restClientBuilder: RestClient.Builder,
     private val circuitBreakerUtil: CircuitBreakerUtil,
     private val circuitBreakerManager: CircuitBreakerManager,
 ) {
+    private val restClient: RestClient = restClientBuilder
+        .baseUrl(boardServiceUrl)
+        .build()
+
     fun countBoardByUserId(userId: Long): Long? {
         val response =
             circuitBreakerUtil.circuitBreaker(
