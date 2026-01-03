@@ -16,13 +16,16 @@ import org.springframework.web.client.RestClient
 
 @Component
 class ConnectClient(
-    @Value("\${client.connect-service.url}") chatServiceUrl: String,
-    private val restClient: RestClient = RestClient.builder()
-        .baseUrl(chatServiceUrl)
-        .build(),
+    @Value("\${client.connect-service.url}")
+    chatServiceUrl: String,
+    restClientBuilder: RestClient.Builder,
     private val circuitBreakerUtil: CircuitBreakerUtil,
     private val circuitBreakerManager: CircuitBreakerManager,
 ) {
+    private val restClient: RestClient = restClientBuilder
+        .baseUrl(chatServiceUrl)
+        .build()
+
     fun countChatroomByUserId(userId: Long): Long? {
         val response =
             circuitBreakerUtil.circuitBreaker(
