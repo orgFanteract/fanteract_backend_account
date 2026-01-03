@@ -16,6 +16,7 @@ import fanteract.account.enumerate.EventStatus
 import fanteract.account.util.messageResolver
 import org.springframework.transaction.annotation.Transactional
 import fanteract.account.dto.client.*
+import mu.KotlinLogging
 
 @Transactional
 @Component
@@ -24,13 +25,14 @@ class UserEventService(
     private val userWriter: UserWriter,
     private val messageAdapter: MessageAdapter,
 ) {
+    private val log = KotlinLogging.logger {}
     /** 2번 **/
     @KafkaListener(
         topics = ["ACCOUNT_SERVICE.debitIfEnoughEvent.PROCESS"],
         groupId = "account-service"
     )
     fun debitIfEnoughEvent(message: String){
-        println("event! = debitIfEnoughEvent")
+        log.info{"event! = debitIfEnoughEvent"}
         // receive message
         val response = messageResolver<DebitIfEnoughEventDto>(message)
 
@@ -94,7 +96,7 @@ class UserEventService(
     )
     /** 5번 **/
     fun updateActivePointEvent(message: String){
-        println("event! = updateActivePointEvent")
+        log.info{"event! = updateActivePointEvent"}
         // receive message
         val response = messageResolver<UpdateActivePointEventDto>(message)
 

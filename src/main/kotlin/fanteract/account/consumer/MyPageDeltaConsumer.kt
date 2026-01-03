@@ -3,6 +3,7 @@ package fanteract.account.consumer
 import com.fasterxml.jackson.databind.ObjectMapper
 import fanteract.account.adapter.MyPageRedisWriter
 import fanteract.account.dto.client.MyPageDeltaEvent
+import mu.KotlinLogging
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
 
@@ -12,7 +13,7 @@ class MyPageDeltaConsumer(
     private val dedupStore: EventDedupRedisStore,
     private val myPageRedisWriter: MyPageRedisWriter,
 ) {
-
+    private val log = KotlinLogging.logger {}
     @KafkaListener(
         topics = ["account.mypage.delta"],
         groupId = "account-mypage-delta-consumer"
@@ -22,8 +23,6 @@ class MyPageDeltaConsumer(
 
         // 1) 멱등 체크
         val isExist = dedupStore.isDuplicate(event.eventId)
-        println(isExist)
-        println(event)
         if (isExist) {
             return
         }

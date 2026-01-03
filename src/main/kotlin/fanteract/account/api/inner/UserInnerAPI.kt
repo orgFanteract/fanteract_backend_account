@@ -4,6 +4,7 @@ import fanteract.account.dto.inner.*
 import fanteract.account.entity.User
 import fanteract.account.service.UserService
 import io.swagger.v3.oas.annotations.Hidden
+import mu.KotlinLogging
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController
 class UserInnerAPI(
     private val userService: UserService,
 ) {
+    private val log = KotlinLogging.logger {}
     @GetMapping("/{userId}/exists")
     fun readUserExistsById(
         @PathVariable userId: Long,
@@ -94,10 +96,9 @@ class UserInnerAPI(
 
     private fun simulateDelay() {
         val randomValue = Math.random()
-        println("simulateDelay randomValue=$randomValue")
+        log.info{"simulateDelay randomValue=$randomValue"}
 
         if (randomValue > 0.7) {
-            println("simulateDelay → randomValue > 0.7, sleeping 5 seconds...")
             Thread.sleep(5000) // 5초 지연
         }
     }

@@ -7,6 +7,7 @@ import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
 import io.jsonwebtoken.Jwts
 import fanteract.account.annotation.LoginRequired
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import kotlin.jvm.java
@@ -18,6 +19,7 @@ import kotlin.text.toByteArray
 class AuthInterceptor(
     @Value($$"${jwt.secret}") private val jwtSecret: String,
 ) : HandlerInterceptor {
+    private val log = KotlinLogging.logger {}
     override fun preHandle(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -40,7 +42,6 @@ class AuthInterceptor(
 
             request.setAttribute("userId", subject)
 
-            println("subject : $subject")
             true
 
         } catch (e: Exception) {

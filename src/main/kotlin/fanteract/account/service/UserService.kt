@@ -96,10 +96,6 @@ class UserService(
                 balance = user.balance,
         )
 
-        println("activityStats = ${activityStats.totalChatRoomCount} / ${activityStats.totalChatCount} / ${activityStats.totalBoardCount} / ${activityStats.totalCommentCount}")
-        println("restrictionStats = ${restrictionStats.totalRestrictedChatCount} / ${restrictionStats.totalRestrictedBoardCount} / ${restrictionStats.totalRestrictedCommentCount}")
-        println("userScore = ${userScore.activePoint} / ${userScore.abusePoint} / ${userScore.balance}")
-
         return ReadUserMyPageOuterResponse(
             email = user.email,
             name = user.name,
