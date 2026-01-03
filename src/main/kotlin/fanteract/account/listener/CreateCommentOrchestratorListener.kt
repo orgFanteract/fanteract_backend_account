@@ -12,6 +12,7 @@ import fanteract.account.enumerate.TopicService
 import fanteract.account.exception.ExceptionType
 import fanteract.account.exception.MessageType
 import fanteract.account.util.BaseUtil
+import mu.KotlinLogging
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
 import java.util.Base64
@@ -23,13 +24,14 @@ class CreateCommentOrchestratorListener(
     private val userWriter: UserWriter,
     private val messageAdapter: MessageAdapter,
 ) {
+    private val log = KotlinLogging.logger {}
     // 2번
     @KafkaListener(
         topics = ["ACCOUNT_SERVICE.UpdateDebitCommand.PROCESS"],
         groupId = "account-service"
     )
     fun onUpdateDebitCommand(message: String) {
-        println("onUpdateDebitCommand")
+        log.info{"onUpdateDebitCommand"}
         val decodedJson = String(Base64.getDecoder().decode(message))
         val command = BaseUtil.fromJson<EventWrapper<UpdateDebitCommand>>(decodedJson)
 
@@ -143,7 +145,7 @@ class CreateCommentOrchestratorListener(
         groupId = "account-service"
     )
     fun onRefundBalanceCommand(message: String) {
-        println("onRefundBalanceCommand")
+        log.info{"onRefundBalanceCommand"}
         val decodedJson = String(Base64.getDecoder().decode(message))
         val command = BaseUtil.fromJson<EventWrapper<RefundBalanceCommand>>(decodedJson)
 

@@ -16,6 +16,7 @@ import fanteract.account.listener.CreateCommentOrchestratorListener.RefundBalanc
 import fanteract.account.listener.CreateCommentOrchestratorListener.RollbackActivePointCommand
 import fanteract.account.listener.CreateCommentOrchestratorListener.RollbackActivePointReply
 import fanteract.account.util.BaseUtil
+import mu.KotlinLogging
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
 import java.util.Base64
@@ -27,10 +28,11 @@ class CreateCommentOrchestratorListenerV2(
     private val userWriter: UserWriter,
     private val messageAdapter: MessageAdapter,
 ) {
+    private val log = KotlinLogging.logger {}
     // 2번 - 사용자 잔액 차감
     @KafkaListener(topics = ["ACCOUNT_SERVICE.UpdateDebitCommandV2.PROCESS"], groupId = "account-service")
     fun onUpdateDebitCommandV2(message: String) {
-        println("onUpdateDebitCommandV2")
+        log.info{"onUpdateDebitCommandV2"}
         val command = BaseUtil.fromJson<EventWrapper<DebitBalanceCommand>>(String(Base64.getDecoder().decode(message)))
         val (sagaId, causationId, payload) = Triple(command.sagaId, command.eventId, command.payload)
 
@@ -72,7 +74,7 @@ class CreateCommentOrchestratorListenerV2(
         groupId = "account-service"
     )
     fun onRefundBalanceCommand(message: String) {
-        println("onRefundBalanceCommand")
+        log.info{"onRefundBalanceCommand"}
         val decodedJson = String(Base64.getDecoder().decode(message))
         val command = BaseUtil.fromJson<EventWrapper<RefundBalanceCommand>>(decodedJson)
 

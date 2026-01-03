@@ -11,6 +11,7 @@ import fanteract.account.enumerate.RiskLevel
 import fanteract.account.exception.ExceptionType
 import fanteract.account.exception.MessageType
 import fanteract.account.util.BaseUtil
+import mu.KotlinLogging
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
@@ -27,6 +28,7 @@ class EventConsumer(
     private val kafkaTemplate: KafkaTemplate<String, String>,
     private val myPageRedisWriter: MyPageRedisWriter,
 ) {
+    private val log = KotlinLogging.logger {}
     @KafkaListener(
         topics = ["ACCOUNT_SERVICE.updateActivePoint"],
         groupId = "account-service"
@@ -53,7 +55,7 @@ class EventConsumer(
         val decodedJson = String(Base64.getDecoder().decode(message))
         val response = BaseUtil.fromJson<EventWrapperForLog>(decodedJson)
 
-        println("success event : ${response.eventName}")
+        log.info{"success event : ${response.eventName}"}
 
         // 사가 트랜잭션 기록
         sagaAccountWriter.create(
@@ -77,7 +79,7 @@ class EventConsumer(
         val decodedJson = String(Base64.getDecoder().decode(message))
         val response = BaseUtil.fromJson<EventWrapperForLog>(decodedJson)
 
-        println("fail event : ${response.eventName}")
+        log.info{"fail event : ${response.eventName}"}
         // 보상 트랜잭션 진행
 
 
@@ -105,7 +107,7 @@ class EventConsumer(
         groupId = "account-service"
     )
     fun debitIfEnoughEventCompensate(message: String){
-        println("compensate : debitIfEnoughEventCompensate")
+        log.info{"compensate : debitIfEnoughEventCompensate"}
         val decodedJson = String(Base64.getDecoder().decode(message))
         val response = BaseUtil.fromJson<EventWrapper<CreateCommentEventCompensateDto>>(decodedJson)
 
@@ -150,7 +152,7 @@ class EventConsumer(
         groupId = "account-service"
     )
     fun updateActivePointEvent(message: String){
-        println("compensate : updateActivePointEvent")
+        log.info{"compensate : updateActivePointEvent"}
         val decodedJson = String(Base64.getDecoder().decode(message))
         val response = BaseUtil.fromJson<EventWrapper<CreateCommentEventCompensateDto>>(decodedJson)
 
